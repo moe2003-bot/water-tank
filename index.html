@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SCADA Tank Control</title>
+<style>
+  :root {
+    --bg-dark: #0f172a;
+    --card-bg: #1e293b;
+    --border-col: #334155;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent: #38bdf8;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    padding: 10px;
+    padding-bottom: 30px;
+  }
+  /* الشريط العلوي */
+  .header {
+    background: var(--card-bg);
+    border: 1px solid var(--border-col);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .app-title {
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .led {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 8px var(--amber);
+  }
+  .header-bottom {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .ip-input {
+    flex: 1;
+    background: var(--bg-dark);
+    border: 1px solid #475569;
+    color: var(--text-main);
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-family: Consolas, monospace;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    direction: ltr;
+  }
+  .btn-reconnect {
+    background: #0284c7;
+    color: white;
+    border: none;
+    padding: 9px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .btn-reconnect:active { background: #0369a1; }
+
+  /* البطاقات */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-col);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  .card-title {
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  /* الخزان الرسومي */
+  .tank-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-col);
+    border-radius: 8px;
+    padding: 10px 5px;
+  }
+  canvas {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* القراءات الرقمية */
+  .readouts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .readout-box {
+    background: var(--bg-dark);
+    border: 1px solid var(--border-col);
+    border-radius: 8px;
+    padding: 10px 6px;
+    text-align: center;
+  }
+  .readout-label {
+    color: var(--text-muted);
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+  .readout-val-big {
+    font-family: Consolas, monospace;
+    font-size: 26px;
+    font-weight: bold;
+    color: var(--green);
+    direction: ltr;
+  }
+  .readout-val-mid {
+    font-family: Consolas, monospace;
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--text-main);
+    direction: ltr;
+    margin-top: 5px;
+  }
+  .rates-bar {
+    background: var(--bg-dark);
+    color: var(--accent);
+    font-family: Consolas, monospace;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    padding: 7px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    direction: ltr;
+  }
+  .mode-banner {
+    background: #334155;
+    color: #cbd5e1;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  /* أزرار التحديث والتصحيح */
+  .action-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .btn-refresh {
+    flex: 1;
+    background: #0284c7;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 12px;
+  }
+  .btn-correct {
+    background: #475569;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 12px;
+  }
+  .cm-input {
+    width: 55px;
+    background: var(--bg-dark);
+    border: 1px solid #475569;
+    color: var(--accent);
+    border-radius: 6px;
+    text-align: center;
+    font-family: Consolas, monospace;
+    font-size: 14px;
+    font-weight: bold;
+    direction: ltr;
+  }
+  .btn-reset {
+    width: 100%;
+    background: #7f1d1d;
+    color: #fecaca;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 12px;
+  }
+
+  /* التحكم بالمضخة */
+  .pump-status-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .btn-pump {
+    width: 100%;
+    background: #16a34a;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .btn-pump.running {
+    background: #dc2626;
+  }
+
+  /* سويتش الإطفاء التلقائي */
+  .switch-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-top: 10px;
+  }
+  .toggle-switch {
+    width: 76px;
+    height: 38px;
+    background: #334155;
+    border-radius: 20px;
+    position: relative;
+    cursor: pointer;
+    transition: 0.25s;
+  }
+  .toggle-switch.active {
+    background: #0284c7;
+  }
+  .toggle-thumb {
+    width: 30px;
+    height: 30px;
+    background: #cbd5e1;
+    border-radius: 50%;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    transition: 0.25s;
+  }
+  .toggle-switch.active .toggle-thumb {
+    left: 42px;
+    background: #ffffff;
+  }
+</style>
+</head>
+<body>
+
+  <!-- الشريط العلوي -->
+  <div class="header">
+    <div class="header-top">
+      <div class="app-title">SCADA TANK CONTROL</div>
+      <div class="status-badge">
+        <span id="connText" style="color: var(--amber);">جاري الاتصال...</span>
+        <div id="connLed" class="led"></div>
+      </div>
+    </div>
+    <div class="header-bottom">
+      <span style="font-size:12px; color:var(--text-muted); font-weight:bold;">IP:</span>
+      <input type="text" id="ipInput" class="ip-input" value="192.168.8.163" onchange="saveIp()">
+      <button class="btn-reconnect" onclick="forceReconnect()">🔌 إعادة الاتصال</button>
+    </div>
+  </div>
+
+  <!-- الخزان الرسومي -->
+  <div class="card">
+    <div class="card-title">المخطط الحي لمستوى الخزان (100 سم)</div>
+    <div class="tank-wrapper">
+      <canvas id="tankCanvas" width="330" height="290"></canvas>
+    </div>
+  </div>
+
+  <!-- بطاقة القراءات الرقمية والتصحيح -->
+  <div class="card">
+    <div class="card-title">بيانات الحساس والتدفق الآني</div>
+    <div class="readouts-grid">
+      <div class="readout-box">
+        <div class="readout-label">نسبة الامتلاء</div>
+        <div id="percLbl" class="readout-val-big">0 %</div>
+      </div>
+      <div class="readout-box">
+        <div class="readout-label">الفراغ / ارتفاع الماء</div>
+        <div id="distLbl" class="readout-val-mid">100.0 cm | 0.0 cm</div>
+      </div>
+    </div>
+
+    <div id="ratesLbl" class="rates-bar">Rise: 0.080 cm/s (Max 0.100) | Drain: 0.12 cm/m</div>
+    <div id="modeBanner" class="mode-banner">طور القياس: قراءة مباشرة من الحساس الفوق صوتي</div>
+
+    <div class="action-row">
+      <button id="refreshBtn" class="btn-refresh" onclick="forceRefreshSensor()">🔄 تحديث ذكي للحساس</button>
+      <button class="btn-correct" onclick="correctWaterHeight()">تصحيح الماء (سم):</button>
+      <input type="number" id="realWaterInput" class="cm-input" value="80" min="0" max="100">
+    </div>
+
+    <button id="resetBtn" class="btn-reset" onclick="resetLearnedData()">🗑️ حذف بيانات التجارب وتصفير الذاكرة</button>
+  </div>
+
+  <!-- بطاقة التحكم بالمضخة -->
+  <div class="card">
+    <div class="card-title">وحدة التحكم الرئيسية بالمضخة (Relay D5)</div>
+    <div class="pump-status-row">
+      <div id="pumpLed" class="led" style="background:#64748b; box-shadow:none;"></div>
+      <span id="pumpStatusLbl" style="font-size:13px; font-weight:bold; color:var(--text-muted);">المضخة متوقفة (OFF)</span>
+    </div>
+    <button id="pumpBtn" class="btn-pump" onclick="togglePump()">تشغيل المضخة (START PUMP)</button>
+  </div>
+
+  <!-- بطاقة الإطفاء التلقائي الذكي -->
+  <div class="card">
+    <div class="card-title">الإطفاء التلقائي الذكي والمنطق الضبابي</div>
+    <div style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.4;">
+      يحسب السرعة الصافية ويتجاوز المنطقة العمياء (27 سم) ليطفئ المضخة عند 100% مع حفظ الذاكرة في EEPROM
+    </div>
+    <div class="switch-row">
+      <div id="autoSwitch" class="toggle-switch" onclick="toggleAutoOff()">
+        <div class="toggle-thumb"></div>
+      </div>
+      <span id="autoStatusLbl" style="font-size:13px; font-weight:bold; color:var(--text-muted);">الإطفاء التلقائي: معطل (OFF)</span>
+    </div>
+  </div>
+
+<script>
+  const TANK_HEIGHT = 100.0;
+  const BLIND_SPOT = 27.0;
+
+  let state = {
+    ip: "192.168.8.163",
+    percentage: 0,
+    distance: 100.0,
+    net_fill_rate: 0.08,
+    max_pump_rate: 0.10,
+    drain_rate: 0.002,
+    fuzzy_load: 0,
+    pump_state: false,
+    auto_off_state: false,
+    is_simulating: false
+  };
+
+  let failCount = 0;
+  let cmdInProgress = false;
+  let lastCmdTime = 0;
+  let bootSyncedOnce = false;
+
+  // استرجاع الحالة المحفوظة في الهاتف
+  function loadLocalState() {
+    try {
+      const saved = localStorage.getItem("scada_mobile_state");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        state = { ...state, ...parsed };
+        document.getElementById("ipInput").value = state.ip;
+      }
+    } catch (e) {}
+  }
+
+  function saveLocalState() {
+    try {
+      state.ip = document.getElementById("ipInput").value.trim();
+      localStorage.setItem("scada_mobile_state", JSON.stringify(state));
+    } catch (e) {}
+  }
+
+  function saveIp() {
+    saveLocalState();
+    forceReconnect();
+  }
+
+  function getWaterColor(perc) {
+    if (perc < 20) return "#ef4444";
+    if (perc < 45) return "#f59e0b";
+    if (perc < 85) return "#0ea5e9";
+    return "#10b981";
+  }
+
+  // رسم الخزان الصناعي
+  function drawTank() {
+    const canvas = document.getElementById("tankCanvas");
+    const ctx = canvas.getContext("2d");
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    const tx1 = 65, tx2 = w - 65;
+    const ty1 = 32, ty2 = h - 18;
+    const tankH = ty2 - ty1;
+    const tankW = tx2 - tx1;
+
+    // خلفية الخزان
+    ctx.fillStyle = "#1e293b";
+    ctx.strokeStyle = "#64748b";
+    ctx.lineWidth = 3;
+    ctx.fillRect(tx1, ty1, tankW, tankH);
+    ctx.strokeRect(tx1, ty1, tankW, tankH);
+
+    // رسم الماء
+    const clampedPerc = Math.max(0, Math.min(100, state.percentage));
+    const waterH = (clampedPerc / 100.0) * tankH;
+    const wy1 = ty2 - waterH;
+
+    if (waterH > 0) {
+      ctx.fillStyle = getWaterColor(clampedPerc);
+      ctx.fillRect(tx1 + 2, wy1, tankW - 4, waterH - 2);
+      ctx.strokeStyle = "#e0f2fe";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(tx1 + 2, wy1);
+      ctx.lineTo(tx2 - 2, wy1);
+      ctx.stroke();
+    }
+
+    // خط المنطقة العمياء (27 سم)
+    const blindY = ty1 + (BLIND_SPOT / TANK_HEIGHT) * tankH;
+    ctx.strokeStyle = "#f43f5e";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(tx1 + 2, blindY);
+    ctx.lineTo(tx2 - 2, blindY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = "#fda4af";
+    ctx.font = "bold 10px Segoe UI";
+    ctx.textAlign = "center";
+    ctx.fillText("المنطقة العمياء (27 سم)", (tx1 + tx2) / 2, blindY - 6);
+
+    // التدريجات المئوية والسنتيمتر
+    ctx.font = "bold 10px Consolas";
+    for (let i = 0; i <= 100; i += 20) {
+      const y = ty2 - (i / 100.0) * tankH;
+      const cmVal = Math.round((i / 100.0) * TANK_HEIGHT);
+
+      ctx.strokeStyle = "#94a3b8";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(tx1 - 6, y); ctx.lineTo(tx1, y);
+      ctx.moveTo(tx2, y); ctx.lineTo(tx2 + 6, y);
+      ctx.stroke();
+
+      ctx.fillStyle = "#cbd5e1";
+      ctx.textAlign = "right";
+      ctx.fillText(i + "%", tx1 - 10, y + 3);
+
+      ctx.fillStyle = "#94a3b8";
+      ctx.textAlign = "left";
+      ctx.fillText(cmVal + "cm", tx2 + 10, y + 3);
+    }
+
+    // رسم الحساس أعلى الخزان
+    const midX = (tx1 + tx2) / 2;
+    ctx.fillStyle = "#475569";
+    ctx.strokeStyle = "#94a3b8";
+    ctx.fillRect(midX - 26, ty1 - 12, 52, 12);
+    ctx.strokeRect(midX - 26, ty1 - 12, 52, 12);
+
+    ctx.fillStyle = "#38bdf8";
+    ctx.font = "bold 9px Consolas";
+    ctx.textAlign = "center";
+    ctx.fillText("Ultrasonic D1/D2", midX, ty1 - 16);
+
+    // النسبة في منتصف الخزان
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 28px Consolas";
+    ctx.fillText(clampedPerc + "%", midX, (ty1 + ty2) / 2 + 10);
+  }
+
+  function updateUI() {
+    const waterH = Math.max(0.0, TANK_HEIGHT - state.distance);
+    const percLbl = document.getElementById("percLbl");
+    percLbl.textContent = state.percentage + " %";
+    percLbl.style.color = getWaterColor(state.percentage);
+
+    document.getElementById("distLbl").textContent =
+      state.distance.toFixed(1) + " cm | " + waterH.toFixed(1) + " cm";
+
+    const drainMin = state.drain_rate * 60.0;
+    document.getElementById("ratesLbl").textContent =
+      ` صعود: ${state.net_fill_rate.toFixed(3)} cm/s (أقصى ${state.max_pump_rate.toFixed(3)}) | هبوط: ${drainMin.toFixed(2)} cm/m `;
+
+    const banner = document.getElementById("modeBanner");
+    if (state.pump_state && state.fuzzy_load === 2) {
+      banner.textContent = "المنطق الضبابي: رصد استهلاك مرتفع أثناء التعبئة! تم تبطيء المؤقت لتعويض الفارق";
+      banner.style.background = "#b45309"; banner.style.color = "#fef3c7";
+    } else if (state.pump_state && state.fuzzy_load === 1) {
+      banner.textContent = "المنطق الضبابي: يوجد استهلاك منزلي متوسط بالتزامن مع عمل المضخة";
+      banner.style.background = "#0369a1"; banner.style.color = "#e0f2fe";
+    } else if (state.is_simulating) {
+      if (state.pump_state) {
+        banner.textContent = "طور القياس: محاكاة التعبئة الذكية داخل المنطقة العمياء (<= 27 سم)";
+        banner.style.background = "#7c2d12"; banner.style.color = "#fed7aa";
+      } else {
+        banner.textContent = "طور القياس: محاكاة هبوط الماء التلقائية داخل المنطقة العمياء";
+        banner.style.background = "#4c1d95"; banner.style.color = "#ddd6fe";
+      }
+    } else {
+      banner.textContent = "طور القياس: قراءة مباشرة من الحساس (5-Readings Median Filter)";
+      banner.style.background = "#334155"; banner.style.color = "#cbd5e1";
+    }
+
+    const pumpLed = document.getElementById("pumpLed");
+    const pumpStatus = document.getElementById("pumpStatusLbl");
+    const pumpBtn = document.getElementById("pumpBtn");
+
+    if (state.pump_state) {
+      pumpLed.style.background = "#22c55e";
+      pumpLed.style.boxShadow = "0 0 8px #22c55e";
+      pumpStatus.textContent = "المضخة تعمل الآن (RUNNING)";
+      pumpStatus.style.color = "#22c55e";
+      pumpBtn.textContent = "إيقاف المضخة فوراً (STOP PUMP)";
+      pumpBtn.classList.add("running");
+    } else {
+      pumpLed.style.background = "#64748b";
+      pumpLed.style.boxShadow = "none";
+      pumpStatus.textContent = "المضخة متوقفة (OFF)";
+      pumpStatus.style.color = "#94a3b8";
+      pumpBtn.textContent = "تشغيل المضخة (START PUMP)";
+      pumpBtn.classList.remove("running");
+    }
+
+    const autoSwitch = document.getElementById("autoSwitch");
+    const autoLbl = document.getElementById("autoStatusLbl");
+    if (state.auto_off_state) {
+      autoSwitch.classList.add("active");
+      autoLbl.textContent = "الإطفاء التلقائي: مفعل (ACTIVE)";
+      autoLbl.style.color = "#38bdf8";
+    } else {
+      autoSwitch.classList.remove("active");
+      autoLbl.textContent = "الإطفاء التلقائي: معطل (OFF)";
+      autoLbl.style.color = "#94a3b8";
+    }
+
+    drawTank();
+  }
+
+  function setConnStatus(online, customText) {
+    const led = document.getElementById("connLed");
+    const txt = document.getElementById("connText");
+    if (online) {
+      led.style.background = "#22c55e";
+      led.style.boxShadow = "0 0 8px #22c55e";
+      txt.textContent = customText || "متصل (ONLINE)";
+      txt.style.color = "#22c55e";
+    } else {
+      led.style.background = "#ef4444";
+      led.style.boxShadow = "0 0 8px #ef4444";
+      txt.textContent = customText || "منقطع (اضغط إعادة الاتصال)";
+      txt.style.color = "#ef4444";
+    }
+  }
+
+  async function fetchWithTimeout(url, timeout = 2800) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeout);
+    try {
+      const res = await fetch(url, { signal: controller.signal, cache: "no-store" });
+      clearTimeout(timer);
+      return res;
+    } catch (err) {
+      clearTimeout(timer);
+      throw err;
+    }
+  }
+
+  async function pollData() {
+    if (!cmdInProgress) {
+      const ip = document.getElementById("ipInput").value.trim();
+      try {
+        const res = await fetchWithTimeout(`http://${ip}/data`, 2600);
+        if (res.ok) {
+          const data = await res.json();
+          applyServerData(data, true);
+        } else {
+          applyServerData(null, false);
+        }
+      } catch (e) {
+        applyServerData(null, false);
+      }
+    }
+    setTimeout(pollData, 2500);
+  }
+
+  function applyServerData(data, success) {
+    if (success && data) {
+      failCount = 0;
+      setConnStatus(true);
+
+      state.percentage = parseInt(data.percentage ?? 0);
+      state.distance = parseFloat(data.distance ?? TANK_HEIGHT);
+      state.net_fill_rate = parseFloat(data.rate ?? state.net_fill_rate);
+      state.max_pump_rate = parseFloat(data.max_rate ?? state.max_pump_rate);
+      state.drain_rate = parseFloat(data.drain_rate ?? state.drain_rate);
+      state.fuzzy_load = parseInt(data.fuzzy_load ?? 0);
+      state.is_simulating = Boolean(data.simulating);
+
+      if (Date.now() - lastCmdTime > 2000) {
+        state.pump_state = Boolean(data.pump);
+        state.auto_off_state = Boolean(data.auto);
+      }
+
+      saveLocalState();
+      updateUI();
+
+      if (parseInt(data.boot_sync ?? 0) === 1 && !bootSyncedOnce) {
+        bootSyncedOnce = true;
+        acknowledgeBootSync();
+      }
+    } else {
+      failCount++;
+      if (failCount >= 2) {
+        setConnStatus(false);
+      }
+    }
+  }
+
+  async function forceReconnect() {
+    cmdInProgress = false;
+    failCount = 0;
+    const ip = document.getElementById("ipInput").value.trim();
+    setConnStatus(true, "جاري التنشيط...");
+    try {
+      const res = await fetchWithTimeout(`http://${ip}/data`, 3000);
+      if (res.ok) {
+        const data = await res.json();
+        applyServerData(data, true);
+      } else {
+        setConnStatus(false);
+      }
+    } catch (e) {
+      setConnStatus(false);
+    }
+  }
+
+  async function togglePump() {
+    const targetAction = state.pump_state ? "OFF" : "ON";
+    const ip = document.getElementById("ipInput").value.trim();
+
+    state.pump_state = (targetAction === "ON");
+    if (!state.pump_state) state.auto_off_state = false;
+    lastCmdTime = Date.now();
+    cmdInProgress = true;
+    updateUI();
+
+    try {
+      await fetchWithTimeout(`http://${ip}/pump?action=${targetAction}`, 2500);
+      saveLocalState();
+    } catch (e) {
+    } finally {
+      cmdInProgress = false;
+    }
+  }
+
+  async function toggleAutoOff() {
+    const targetState = state.auto_off_state ? "OFF" : "ON";
+    const ip = document.getElementById("ipInput").value.trim();
+
+    state.auto_off_state = (targetState === "ON");
+    lastCmdTime = Date.now();
+    cmdInProgress = true;
+    updateUI();
+
+    try {
+      await fetchWithTimeout(`http://${ip}/auto?state=${targetState}`, 2500);
+      saveLocalState();
+    } catch (e) {
+    } finally {
+      cmdInProgress = false;
+    }
+  }
+
+  async function forceRefreshSensor() {
+    const ip = document.getElementById("ipInput").value.trim();
+    const btn = document.getElementById("refreshBtn");
+    btn.textContent = "⏳ جاري الفحص...";
+    cmdInProgress = true;
+    try {
+      const res = await fetchWithTimeout(`http://${ip}/refresh`, 4500);
+      if (res.ok) {
+        const data = await res.json();
+        applyServerData(data, true);
+      }
+    } catch (e) {
+      alert("تعذر الاتصال بالشريحة لتحديث القراءة.");
+    } finally {
+      cmdInProgress = false;
+      btn.textContent = "🔄 تحديث ذكي للحساس";
+    }
+  }
+
+  async function correctWaterHeight() {
+    const ip = document.getElementById("ipInput").value.trim();
+    const val = parseFloat(document.getElementById("realWaterInput").value);
+    if (isNaN(val) || val < 0 || val > TANK_HEIGHT) {
+      alert("أدخل ارتفاع ماء صحيح بين 0 و 100 سم.");
+      return;
+    }
+    const targetDist = TANK_HEIGHT - val;
+    cmdInProgress = true;
+    try {
+      const res = await fetchWithTimeout(`http://${ip}/refresh?manual_dist=${targetDist.toFixed(1)}`, 4000);
+      if (res.ok) {
+        const data = await res.json();
+        applyServerData(data, true);
+      }
+    } catch (e) {
+      alert("تعذر إرسال التصحيح للشريحة.");
+    } finally {
+      cmdInProgress = false;
+    }
+  }
+
+  async function resetLearnedData() {
+    if (!confirm("هل تريد بالتأكيد حذف جميع قراءات التجارب السابقة وتصفير ذاكرة الشريحة والهاتف؟")) return;
+    const ip = document.getElementById("ipInput").value.trim();
+    const btn = document.getElementById("resetBtn");
+    btn.textContent = "⏳ جاري مسح الذاكرة...";
+    cmdInProgress = true;
+    localStorage.removeItem("scada_mobile_state");
+
+    try {
+      const res = await fetchWithTimeout(`http://${ip}/reset`, 4500);
+      if (res.ok) {
+        const data = await res.json();
+        applyServerData(data, true);
+        alert("تم مسح بيانات التجارب وتصفير الذاكرة بنجاح.");
+      }
+    } catch (e) {
+      alert("تعذر الوصول إلى الشريحة لتصفير الذاكرة.");
+    } finally {
+      cmdInProgress = false;
+      btn.textContent = "🗑️ حذف بيانات التجارب وتصفير الذاكرة";
+    }
+  }
+
+  async function acknowledgeBootSync() {
+    const ip = document.getElementById("ipInput").value.trim();
+    try {
+      const url = `http://${ip}/sync?dist=${state.distance.toFixed(1)}&rate=${state.net_fill_rate.toFixed(4)}&max_rate=${state.max_pump_rate.toFixed(4)}&drain_rate=${state.drain_rate.toFixed(5)}&sim=${state.is_simulating ? 1 : 0}&auto=${state.auto_off_state ? 1 : 0}`;
+      await fetchWithTimeout(url, 2500);
+    } catch (e) {}
+  }
+
+  window.onload = () => {
+    loadLocalState();
+    updateUI();
+    pollData();
+  };
+</script>
+</body>
+</html>
