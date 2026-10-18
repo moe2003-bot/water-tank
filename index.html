@@ -46,7 +46,6 @@
       margin: 0 auto;
     }
 
-    /* الشريط العلوي */
     .top-bar {
       display: flex;
       justify-content: space-between;
@@ -82,7 +81,6 @@
       border-color: rgba(45, 206, 137, 0.45);
     }
 
-    /* التبويبات الثلاثة */
     .tabs-nav {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -128,7 +126,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* بطاقات Argon المرتفعة */
     .argon-card {
       background: linear-gradient(180deg, var(--argon-surface-elevated) 0%, var(--argon-surface) 100%);
       border-top: 1px solid rgba(255, 255, 255, 0.16);
@@ -259,9 +256,9 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 60%;
+      height: 75%;
       background: linear-gradient(180deg, #11cdef 0%, #5e72e4 100%);
-      transition: height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 0 -4px 20px rgba(17, 205, 239, 0.6);
       z-index: 1;
     }
@@ -349,7 +346,46 @@
       border-bottom-width: 1px;
     }
 
-    /* ================= الأزرار الاحترافية (مطفأ بالحالة الطبيعية / مضيء عند التفعيل) ================= */
+    /* حقل التصحيح اليدوي لارتفاع الماء */
+    .manual-correction-box {
+      margin-top: 14px;
+      background: rgba(11, 17, 32, 0.82);
+      border: 1px solid rgba(17, 205, 239, 0.35);
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .manual-correction-input {
+      width: 90px;
+      background: #060911;
+      border: 1.5px solid #475569;
+      color: #11cdef;
+      font-size: 1.2rem;
+      font-weight: 900;
+      padding: 7px 10px;
+      border-radius: 10px;
+      text-align: center;
+      outline: none;
+    }
+
+    .btn-correct-level {
+      background: linear-gradient(180deg, #0ea5e9, #0284c7);
+      border: none;
+      border-bottom: 3px solid #0369a1;
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.82rem;
+      padding: 9px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* ================= الأزرار الاحترافية (استجابة فورية + ضغطة 5 ثوانٍ) ================= */
     .pro-controls-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -367,14 +403,14 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      transition: transform 0.15s ease, box-shadow 0.25s ease, background 0.25s ease;
+      touch-action: manipulation;
+      transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
     .pro-btn:active {
       transform: translateY(3px);
     }
 
-    /* مؤشر LED في زاوية الزر */
     .btn-led {
       position: absolute;
       top: 12px;
@@ -398,18 +434,21 @@
       justify-content: center;
       font-size: 1.45rem;
       box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      pointer-events: none;
     }
 
     .pro-btn-title {
       font-size: 0.94rem;
       font-weight: 900;
       letter-spacing: 0.2px;
+      pointer-events: none;
     }
 
     .pro-btn-sub {
-      font-size: 0.69rem;
+      font-size: 0.68rem;
       color: rgba(255, 255, 255, 0.72);
       font-weight: 600;
+      pointer-events: none;
     }
 
     .hold-progress-bar {
@@ -420,10 +459,10 @@
       width: 0%;
       background: #fde047;
       box-shadow: 0 0 12px #fde047;
-      transition: width 0.1s linear;
+      transition: width 0.08s linear;
+      pointer-events: none;
     }
 
-    /* الحالة الطبيعية: مطفأ (OFF State) لكلا الزرين */
     .pro-btn.state-off {
       background: linear-gradient(180deg, #273449 0%, #162032 100%);
       border-top: 1px solid rgba(255,255,255,0.14);
@@ -439,7 +478,6 @@
       box-shadow: inset 0 1px 3px rgba(0,0,0,0.9);
     }
 
-    /* حالة تشغيل المضخة الفعالة (ON State) */
     .pro-btn.pump-on-state {
       background: linear-gradient(180deg, #10b981 0%, #047857 100%);
       border-top: 1px solid rgba(255,255,255,0.38);
@@ -456,7 +494,6 @@
       box-shadow: 0 0 12px #fff, 0 0 20px #34d399;
     }
 
-    /* حالة تفعيل الإطفاء التلقائي (ON State) */
     .pro-btn.auto-on-state {
       background: linear-gradient(180deg, #6366f1 0%, #4338ca 100%);
       border-top: 1px solid rgba(255,255,255,0.35);
@@ -594,12 +631,12 @@
       margin-top: 12px;
     }
 
-    /* نافذة المؤقت العام المستقل (ضغطة 5 ثوانٍ) */
+    /* النوافذ المنبثقة */
     .modal-backdrop {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(5, 9, 18, 0.85);
+      background: rgba(5, 9, 18, 0.88);
       backdrop-filter: blur(8px);
       z-index: 999;
       align-items: center;
@@ -712,6 +749,18 @@
     .log-points strong {
       color: #fff;
     }
+
+    .avg-pill {
+      display: inline-block;
+      background: rgba(17, 205, 239, 0.15);
+      border: 1px solid rgba(17, 205, 239, 0.35);
+      color: #38bdf8;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      margin: 3px;
+    }
   </style>
 </head>
 <body>
@@ -725,7 +774,7 @@
     <button class="btn-dismiss" onclick="stopAlertSound()">إيقاف الصوت</button>
   </div>
 
-  <!-- شريط المؤقت العام المستقل (يظهر في كل الأجهزة عند تفعيله) -->
+  <!-- شريط المؤقت العام المستقل -->
   <div id="overrideBanner" class="override-banner">
     <div>
       <div style="font-size:0.85rem; font-weight:900;">⚡ المؤقت العام المستقل نشط (بلا شروط)</div>
@@ -750,11 +799,11 @@
   <!-- ================= التبويب الأول: التشغيل ================= -->
   <div id="tabControl" class="tab-pane active">
 
-    <!-- بطاقة الخزان الكبير (100 سم) -->
+    <!-- بطاقة الخزان الكبير والتصحيح اليدوي -->
     <div class="argon-card">
       <div class="card-title">
         <span>مستوى الخزان (100 سم)</span>
-        <span id="sensorBadge" style="font-size:0.76rem; color:#6ee7b7;">قراءة الحساس المباشرة</span>
+        <span id="sensorBadge" style="font-size:0.76rem; color:#fcd34d;">داخل المنطقة العمياء</span>
       </div>
 
       <div class="tank-layout">
@@ -785,11 +834,11 @@
               <div class="grid-tick"></div>
             </div>
 
-            <div id="tankWaterFill" class="tank-water-fill" style="height: 60%;"></div>
+            <div id="tankWaterFill" class="tank-water-fill" style="height: 75%;"></div>
 
             <div class="tank-center-label">
-              <span id="tankPctBig" class="pct-num">60%</span>
-              <span id="tankCmSub" class="cm-sub">60 سم</span>
+              <span id="tankPctBig" class="pct-num">75%</span>
+              <span id="tankCmSub" class="cm-sub">75 سم</span>
             </div>
           </div>
 
@@ -803,28 +852,39 @@
           </div>
         </div>
 
-        <!-- حقول ارتفاع الماء والفراغ -->
         <div class="tank-side-info">
           <div class="level-box water-box">
             <div class="level-title">ارتفاع الماء الحالي</div>
-            <div id="waterHeightCm" class="level-value" style="color:#11cdef;">60.0 سم</div>
+            <div id="waterHeightCm" class="level-value" style="color:#11cdef;">75.0 سم</div>
           </div>
 
           <div class="level-box empty-box">
             <div class="level-title">مستوى الفراغ المتبقي</div>
-            <div id="emptySpaceCm" class="level-value" style="color:#a5b4fc;">40.0 سم</div>
+            <div id="emptySpaceCm" class="level-value" style="color:#a5b4fc;">25.0 سم</div>
           </div>
 
           <button class="btn-refresh" onclick="forceRefreshSensor()">🔄 تحديث القراءة الآن</button>
         </div>
       </div>
 
+      <!-- حقل التصحيح اليدوي لارتفاع الماء -->
+      <div class="manual-correction-box">
+        <div>
+          <div style="font-size:0.82rem; font-weight:800; color:#fff;">🛠️ التصحيح اليدوي لارتفاع الماء (سم):</div>
+          <div style="font-size:0.71rem; color:var(--argon-muted);">يُثبّت المؤشر ويعاير متوسط سرعة الصعود تلقائياً</div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input type="number" id="manualWaterCmInput" class="manual-correction-input" placeholder="75" min="0" max="100" step="0.5" />
+          <button class="btn-correct-level" onclick="submitManualWaterLevel()">تصحيح</button>
+        </div>
+      </div>
+
       <div class="simple-note">
-        💡 <strong>توضيح:</strong> تحت المنطقة العمياء يتبع المؤشر قراءة الحساس الحقيقية فقط. وعند دخول المنطقة العمياء يتحرك وفق المعدل الزمني لارتفاع الماء ويحتفظ بقراءته عند الإطفاء.
+        💡 <strong>توضيح:</strong> المؤشر لن ينزل أبداً إلا إذا انخفض مستوى الماء فعلياً تحت المنطقة العمياء (فراغ أكبر من 30 سم).
       </div>
     </div>
 
-    <!-- بطاقة أزرار التحكم (تبدأ مطفأة بالحالة الطبيعية) -->
+    <!-- بطاقة أزرار التحكم (تعمل باللمسة السريعة فوراً + ضغطة 5 ثوانٍ للمؤقت العام) -->
     <div class="argon-card">
       <div class="card-title">
         <span>التحكم بالمضخة والأمان</span>
@@ -832,18 +892,22 @@
       </div>
 
       <div class="pro-controls-grid">
-        <!-- زر التشغيل / الإطفاء: مطفأ بالحالة الطبيعية -->
+        <!-- زر التشغيل / الإطفاء الفوري -->
         <button id="btnPump" class="pro-btn state-off"
-          onmousedown="startPumpHold(event)" onmouseup="endPumpHold(event)" onmouseleave="cancelPumpHold()"
-          ontouchstart="startPumpHold(event)" ontouchend="endPumpHold(event)" ontouchcancel="cancelPumpHold()">
+          oncontextmenu="return false;"
+          onpointerdown="onPumpPointerDown(event)"
+          onpointerup="onPumpPointerUp(event)"
+          onpointercancel="cancelPumpHold()"
+          onpointerleave="cancelPumpHold()"
+          onclick="onPumpQuickClick(event)">
           <span class="btn-led"></span>
           <div class="pro-btn-icon-ring">⚡</div>
           <span id="btnPumpText" class="pro-btn-title">المضخة: مطفأة</span>
-          <span id="btnPumpSub" class="pro-btn-sub">اضغط للتشغيل (5 ثوانٍ لمؤقت عام)</span>
+          <span id="btnPumpSub" class="pro-btn-sub">لمسة = تشغيل فوري | 5ث = مؤقت</span>
           <div id="holdProgressBar" class="hold-progress-bar"></div>
         </button>
 
-        <!-- زر تفعيل الإطفاء التلقائي: مطفأ بالحالة الطبيعية -->
+        <!-- زر تفعيل الإطفاء التلقائي -->
         <button id="btnAuto" class="pro-btn state-off" onclick="toggleAutoState()">
           <span class="btn-led"></span>
           <div class="pro-btn-icon-ring">🛡️</div>
@@ -853,21 +917,21 @@
       </div>
 
       <div id="autoExplainMsg" class="simple-note">
-        ⚠️ <strong>تنبيه:</strong> الإطفاء التلقائي مطفأ حالياً. لن تعمل خوارزميات الإطفاء التلقائي إلا عند تفعيله.
+        ⚠️ <strong>تنبيه:</strong> الإطفاء التلقائي مطفأ حالياً.
       </div>
     </div>
 
-    <!-- بطاقة مؤقت الإطفاء التلقائي المرتبط بالمنطقة العمياء -->
+    <!-- بطاقة مؤقت الإطفاء التلقائي -->
     <div class="argon-card">
       <div class="card-title">
-        <span>مؤقت الإطفاء التلقائي (يرتبط بالمنطقة العمياء)</span>
+        <span>مؤقت الإطفاء التلقائي (للمنطقة العمياء)</span>
         <button class="btn-dismiss" style="margin:0; padding:4px 10px; font-size:0.73rem; background:#334155; color:#cbd5e1;" onclick="resetTo90CmRule()">تفعيل حد 90 سم</button>
       </div>
 
       <div class="large-timer-section">
         <div class="big-input-container">
           <div class="big-input-label">
-            <span>أدخل وقت الإطفاء بعد دخول المنطقة العمياء (دقيقة):</span>
+            <span>أدخل وقت الإطفاء في المنطقة العمياء (دقيقة):</span>
           </div>
           <div class="big-input-row">
             <input type="number" id="shutoffMinInput" class="huge-number-input" placeholder="0" value="" min="1" max="300" />
@@ -882,12 +946,6 @@
           </div>
           <div id="shutoffTimerDisplay" class="countdown-digits-big">90 سم</div>
         </div>
-      </div>
-
-      <div class="simple-note">
-        📌 <strong>قاعدة العمل:</strong>
-        <br>• إذا ثبتَّ وقتاً هنا: لن يبدأ العد التنازلي إلا عند وصول الماء للمنطقة العمياء (27 سم).
-        <br>• إذا لم تثبت وقتاً جديداً والماء في المنطقة العمياء: تنطفئ المضخة تلقائياً عند مستوى 90 سم.
       </div>
     </div>
 
@@ -932,30 +990,42 @@
 
   </div>
 
-  <!-- ================= التبويب الثالث: التوقعات والمنبه ================= -->
+  <!-- ================= التبويب الثالث: التوقعات والمنبه والمتوسطات الخمسة ================= -->
   <div id="tabAdvanced" class="tab-pane">
 
     <div class="argon-card">
       <div class="card-title">
-        <span>الوقت المتوقع لامتلاء الخزان (استرشادي فقط)</span>
+        <span>الوقت المتوقع لامتلاء الخزان (استرشادي)</span>
       </div>
 
       <div class="countdown-showcase" style="flex-direction:column; text-align:center; gap:8px; border-color:rgba(17, 205, 239, 0.45);">
         <span style="font-size:0.84rem; color:var(--argon-muted); font-weight:700;">العداد التنازلي المتوقع للامتلاء الكامل (100 سم)</span>
         <div id="estFillTimerDisplay" class="countdown-digits-big" style="color:var(--argon-info); font-size:2.4rem;">00:00</div>
-        <span style="font-size:0.76rem; color:var(--argon-muted);">يُحسب آلياً بناءً على المعدل الزمني لارتفاع الماء (سم/دقيقة) دون التدخل في إطفاء المضخة</span>
+        <span id="rateSourceDesc" style="font-size:0.78rem; color:#fde047; font-weight:700;">أول تشغيلة: يعتمد معدل 55 لتر/دقيقة على 3000 لتر (1.83 سم/دقيقة)</span>
       </div>
     </div>
 
+    <!-- بطاقة المتوسطات الخمسة المحفوظة لمعدل ارتفاع الماء -->
     <div class="argon-card">
       <div class="card-title">
-        <span>المعدل الزمني لارتفاع الماء ومنبه المراقبة</span>
+        <span>متوسطات ارتفاع الماء المحفوظة (آخر 5 تشغيلات)</span>
+        <span id="avgCountBadge" style="font-size:0.78rem; color:#11cdef;">0 / 5 متوسطات</span>
+      </div>
+
+      <div style="background:rgba(11,17,32,0.8); padding:14px; border-radius:16px; border:1px solid var(--argon-border); margin-bottom:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:0.82rem; color:var(--argon-muted);">المتوسط التراكمي المعتمد حالياً:</span>
+          <strong id="currentEffectiveRateText" style="font-size:1.25rem; color:#2dce89;">1.83 سم / دقيقة</strong>
+        </div>
+        <div id="rateHistoryPills" style="margin-top:8px;">
+          <span style="font-size:0.78rem; color:var(--argon-muted);">لا توجد متوسطات سابقة محفوظة بعد (وضع أول تشغيلة: 55 لتر/3000 لتر).</span>
+        </div>
       </div>
 
       <div class="stats-grid" style="margin-bottom: 14px;">
         <div class="big-input-container" style="padding:12px;">
-          <span style="font-size:0.75rem; color:var(--argon-muted); display:block; margin-bottom:6px;">معدل ارتفاع الماء (سم / دقيقة)</span>
-          <input type="number" id="riseRateInput" class="huge-number-input" style="font-size:1.35rem; padding:8px;" value="1.2" step="0.1" min="0.1" max="10" />
+          <span style="font-size:0.75rem; color:var(--argon-muted); display:block; margin-bottom:6px;">إضافة/تعديل معدل (سم/دقيقة)</span>
+          <input type="number" id="riseRateInput" class="huge-number-input" style="font-size:1.35rem; padding:8px;" value="1.83" step="0.05" min="0.2" max="8" />
         </div>
 
         <div class="big-input-container" style="padding:12px;">
@@ -965,12 +1035,8 @@
       </div>
 
       <div style="display:flex; gap:10px;">
-        <button class="btn-apply-big" style="flex:1; padding:13px;" onclick="saveRateAndAlertSettings()">💾 حفظ وتعميم على كل الأجهزة</button>
-        <button class="btn-refresh" style="width:auto; padding:13px 16px;" onclick="triggerAlert('🔔 تجربة المنبه', 'يعمل المنبه الصوتي والاهتزاز بنجاح.')">🔔 تجربة</button>
-      </div>
-
-      <div class="simple-note">
-        📈 <strong>ملاحظة هندسية:</strong> تقوم الشريحة بتحديث "معدل ارتفاع الماء (سم/دقيقة)" تلقائياً أثناء التعبئة الحقيقية تحت المنطقة العمياء، ويمكنك أيضاً تعديله يدوياً هنا ليُعتمد في حساب صعود المؤشر داخل المنطقة العمياء.
+        <button class="btn-apply-big" style="flex:1; padding:13px;" onclick="saveRateAndAlertSettings()">💾 حفظ وإضافة للمتوسطات</button>
+        <button class="btn-refresh" style="width:auto; padding:13px 14px; background:#475569;" onclick="resetSavedRates()">إعادة لأول تشغيلة</button>
       </div>
     </div>
 
@@ -978,14 +1044,41 @@
 
 </div>
 
-<!-- ================= نافذة المؤقت العام المستقل (تفتح عند الضغط المطول 5 ثوانٍ) ================= -->
+<!-- ================= نافذة المؤقت الإجباري لأول تشغيلة في المنطقة العمياء ================= -->
+<div id="mandatoryFirstRunModal" class="modal-backdrop">
+  <div class="modal-card" style="border-color: #fb6340;">
+    <div class="card-title" style="margin-bottom:10px;">
+      <span style="color:#fb6340; font-size:1.05rem;">⚠️ إدخال إجباري لمؤقت الإطفاء (أول تشغيلة)</span>
+    </div>
+    <p style="font-size:0.84rem; color:#e2e8f0; line-height:1.6; margin-bottom:14px;">
+      الخزان حالياً <strong>ضمن المنطقة العمياء</strong>، وهذه <strong>أول تشغيلة للنظام</strong> (لا يملك المتحكم بيانات سابقة لمعدل صعود الماء).
+      <br>لأمان الخزان، <strong>يجب تحديد وقت مؤقت الإطفاء إجبارياً</strong>، وسيرتفع المؤشر بمعدل <strong>55 لتر/دقيقة على 3000 لتر (1.83 سم/دقيقة)</strong>.
+    </p>
+
+    <div class="big-input-container" style="margin-bottom:16px; border-color:#fb6340;">
+      <span style="font-size:0.84rem; font-weight:800; color:#fff; display:block; margin-bottom:8px;">أدخل وقت الإطفاء الإجباري لهذه التشغيلة (دقيقة):</span>
+      <input type="number" id="mandatoryTimerInput" class="huge-number-input" value="10" min="1" max="180" />
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <button class="btn-apply-big" style="padding:14px; background:linear-gradient(180deg, #10b981, #047857); border-bottom-color:#064e3b;" onclick="confirmMandatoryFirstRun()">
+        ⚡ تثبيت المؤقت وتشغيل المضخة فوراً
+      </button>
+      <button class="btn-refresh" style="background:#334155; border-bottom-color:#0f172a;" onclick="closeMandatoryModal()">
+        إلغاء
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= نافذة المؤقت العام المستقل (تفتح عند الضغط المستمر 5 ثوانٍ) ================= -->
 <div id="overrideModal" class="modal-backdrop">
   <div class="modal-card">
     <div class="card-title" style="margin-bottom:10px;">
       <span style="color:#fde047; font-size:1.05rem;">⏱️ مؤقت تشغيل / إطفاء عام مستقل</span>
     </div>
     <p style="font-size:0.82rem; color:#cbd5e1; line-height:1.5; margin-bottom:16px;">
-      هذه النافذة تعمل بشكل مباشر ومستقل <strong>بغض النظر عن أي شرط آخر</strong> (لا تنتظر المنطقة العمياء ولا تتقيد بزر الإطفاء التلقائي).
+      تم فتح هذه النافذة عبر الضغط المستمر (5 ثوانٍ). هذا المؤقت يعمل بشكل مباشر ومستقل <strong>بغض النظر عن أي شرط آخر</strong>.
     </p>
 
     <div class="big-input-container" style="margin-bottom:16px;">
@@ -1007,423 +1100,11 @@
 <script>
   const ESP_IP = "192.168.8.163";
 
-  // جميع المتغيرات تأتي مباشرة من الشريحة لتتطابق على كل الأجهزة
   let isPumpRunning = false;
   let isAutoEnabled = false;
-  let isWaterInBlindSpot = false;
+  let isWaterInBlindSpot = true;
+  let savedAvgCount = 0; // 0 تعني أول تشغيلة للنظام (لا توجد بيانات سابقة)
   let customTimerActive = false;
   let shutoffSetMin = 0;
   let shutoffRemSec = 0;
   let overrideActive = false;
-  let overrideRemSec = 0;
-  let alertBeforeMin = 5;
-
-  let blindSpotNotified = false;
-  let roofReminderNotified = false;
-  let inputsSyncedOnce = false;
-
-  let audioCtx = null;
-  let beepTimer = null;
-
-  // متغيرات الضغطة المطولة 5 ثوانٍ
-  let holdStartTime = 0;
-  let holdInterval = null;
-  let holdCompleted = false;
-
-  function openTab(tabId, btn) {
-    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    btn.classList.add('active');
-  }
-
-  function formatMMSS(sec) {
-    sec = Math.max(0, Math.floor(sec));
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-  }
-
-  function formatDurationText(sec) {
-    sec = Math.max(0, Math.floor(sec));
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return `${m} د ${s} ث`;
-  }
-
-  // ================= منطق الضغط المطول 5 ثوانٍ على زر المضخة =================
-  function startPumpHold(e) {
-    if (e.type === 'mousedown' && e.button !== 0) return;
-    holdCompleted = false;
-    holdStartTime = Date.now();
-    const bar = document.getElementById('holdProgressBar');
-    bar.style.width = '0%';
-
-    if (holdInterval) clearInterval(holdInterval);
-    holdInterval = setInterval(() => {
-      const elapsed = Date.now() - holdStartTime;
-      const pct = Math.min(100, (elapsed / 5000) * 100);
-      bar.style.width = `${pct}%`;
-
-      if (elapsed >= 5000) {
-        clearInterval(holdInterval);
-        holdInterval = null;
-        holdCompleted = true;
-        bar.style.width = '0%';
-        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-        openOverrideModal();
-      }
-    }, 50);
-  }
-
-  function endPumpHold(e) {
-    if (holdInterval) {
-      clearInterval(holdInterval);
-      holdInterval = null;
-    }
-    document.getElementById('holdProgressBar').style.width = '0%';
-
-    if (!holdCompleted && (Date.now() - holdStartTime < 5000)) {
-      togglePumpState();
-    }
-    holdCompleted = false;
-  }
-
-  function cancelPumpHold() {
-    if (holdInterval) {
-      clearInterval(holdInterval);
-      holdInterval = null;
-    }
-    document.getElementById('holdProgressBar').style.width = '0%';
-  }
-
-  function openOverrideModal() {
-    document.getElementById('overrideModal').classList.add('show');
-  }
-
-  function closeOverrideModal() {
-    document.getElementById('overrideModal').classList.remove('show');
-  }
-
-  async function startUnconditionalTimer() {
-    const m = parseInt(document.getElementById('overrideMinInput').value, 10);
-    if (isNaN(m) || m < 1) return;
-    closeOverrideModal();
-    try {
-      await fetch(`http://${ESP_IP}/override?min=${m}`);
-      syncWithEsp();
-    } catch (e) {}
-  }
-
-  async function cancelOverrideTimer() {
-    try {
-      await fetch(`http://${ESP_IP}/override?cancel=1`);
-      syncWithEsp();
-    } catch (e) {}
-  }
-
-  // ================= تثبيت وقت الإطفاء المشروط بالمنطقة العمياء =================
-  async function setShutoffTimerNow() {
-    const val = parseInt(document.getElementById('shutoffMinInput').value, 10);
-    if (isNaN(val) || val < 1) return;
-    roofReminderNotified = false;
-    try {
-      await fetch(`http://${ESP_IP}/config?min=${val}`);
-      syncWithEsp();
-    } catch (e) {}
-  }
-
-  async function resetTo90CmRule() {
-    document.getElementById('shutoffMinInput').value = '';
-    try {
-      await fetch(`http://${ESP_IP}/config?clear_timer=1`);
-      syncWithEsp();
-    } catch (e) {}
-  }
-
-  async function saveRateAndAlertSettings() {
-    const rateVal = parseFloat(document.getElementById('riseRateInput').value);
-    const alertVal = parseInt(document.getElementById('alertBeforeInput').value, 10);
-
-    if ("Notification" in window && Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
-
-    try {
-      await fetch(`http://${ESP_IP}/config?rate=${rateVal}&alert=${alertVal}`);
-      syncWithEsp();
-    } catch (e) {}
-  }
-
-  // نظام التنبيه الصوتي
-  function triggerAlert(title, message) {
-    document.getElementById('autoAlertTitle').innerText = title;
-    document.getElementById('autoAlertDesc').innerText = message;
-    document.getElementById('autoAlertBox').style.display = 'block';
-
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (beepTimer) clearInterval(beepTimer);
-
-    const playTone = () => {
-      try {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(920, audioCtx.currentTime);
-        osc.frequency.setValueAtTime(1240, audioCtx.currentTime + 0.18);
-        gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.4);
-        if (navigator.vibrate) navigator.vibrate([350, 150, 350]);
-      } catch (e) {}
-    };
-
-    playTone();
-    beepTimer = setInterval(playTone, 1200);
-
-    if ("Notification" in window && Notification.permission === "granted") {
-      new Notification(title, { body: message });
-    }
-  }
-
-  function stopAlertSound() {
-    document.getElementById('autoAlertBox').style.display = 'none';
-    if (beepTimer) {
-      clearInterval(beepTimer);
-      beepTimer = null;
-    }
-  }
-
-  // جلب البيانات من الشريحة كل ثانية لضمان التطابق على جميع الأجهزة
-  async function syncWithEsp() {
-    try {
-      const res = await fetch(`http://${ESP_IP}/data`, { cache: 'no-store' });
-      if (!res.ok) throw new Error('Offline');
-      const d = await res.json();
-
-      const pill = document.getElementById('connStatus');
-      pill.innerText = 'متصل بالشريحة ✓';
-      pill.classList.add('online');
-
-      renderSystemState(d);
-    } catch (err) {
-      const pill = document.getElementById('connStatus');
-      pill.innerText = 'غير متصل بالشريحة';
-      pill.classList.remove('online');
-    }
-  }
-
-  function renderSystemState(d) {
-    const waterCm = parseFloat(d.water_cm || 0);
-    const emptyCm = parseFloat(d.empty_cm || (100 - waterCm));
-
-    // تحديث الخزان والحقول
-    document.getElementById('tankWaterFill').style.height = `${waterCm}%`;
-    document.getElementById('tankPctBig').innerText = `${Math.round(waterCm)}%`;
-    document.getElementById('tankCmSub').innerText = `${waterCm.toFixed(0)} سم`;
-
-    document.getElementById('waterHeightCm').innerText = `${waterCm.toFixed(1)} سم`;
-    document.getElementById('emptySpaceCm').innerText = `${emptyCm.toFixed(1)} سم`;
-
-    // حالة المنطقة العمياء والإشعار التلقائي
-    isWaterInBlindSpot = (d.in_blind_spot === 1);
-    const badge = document.getElementById('sensorBadge');
-
-    if (isWaterInBlindSpot) {
-      badge.innerText = '🔒 داخل المنطقة العمياء (حساب زمني ومؤشر مثبت)';
-      badge.style.color = '#fcd34d';
-
-      if (!blindSpotNotified && (d.pump === 1 || emptyCm <= 27.0)) {
-        blindSpotNotified = true;
-        triggerAlert(
-          '⚠️ وصل الماء إلى المنطقة العمياء!',
-          'دخل مستوى الماء في المنطقة العمياء للحساس (27 سم). بدأ الحساب الزمني لارتفاع الماء وتفعلت شروط الحماية.'
-        );
-      }
-    } else {
-      badge.innerText = '📡 خارج المنطقة العمياء (قراءة الحساس الحقيقية)';
-      badge.style.color = '#6ee7b7';
-      blindSpotNotified = false;
-    }
-
-    // حالة المضخة ومدة التشغيل (مطفأ بالحالة الطبيعية، صفر عند التوقف)
-    isPumpRunning = (d.pump === 1);
-    const btnPump = document.getElementById('btnPump');
-    const btnPumpText = document.getElementById('btnPumpText');
-    const btnPumpSub = document.getElementById('btnPumpSub');
-    const runTimeEl = document.getElementById('activeRunTime');
-
-    if (isPumpRunning) {
-      btnPump.className = 'pro-btn pump-on-state';
-      btnPumpText.innerText = 'المضخة: تعمل الآن';
-      btnPumpSub.innerText = 'اضغط للإيقاف (5 ثوانٍ لمؤقت عام)';
-      runTimeEl.innerText = `مدة التشغيل: ${formatMMSS(d.current_run_sec || 0)}`;
-      runTimeEl.style.color = '#2dce89';
-    } else {
-      btnPump.className = 'pro-btn state-off';
-      btnPumpText.innerText = 'المضخة: مطفأة';
-      btnPumpSub.innerText = 'اضغط للتشغيل (5 ثوانٍ لمؤقت عام)';
-      runTimeEl.innerText = 'مدة التشغيل: 00:00';
-      runTimeEl.style.color = '#94a3b8';
-      roofReminderNotified = false;
-    }
-
-    // حالة زر الإطفاء التلقائي (مطفأ بالحالة الطبيعية)
-    isAutoEnabled = (d.auto === 1);
-    const btnAuto = document.getElementById('btnAuto');
-    const btnAutoText = document.getElementById('btnAutoText');
-    const btnAutoSub = document.getElementById('btnAutoSub');
-    const autoMsg = document.getElementById('autoExplainMsg');
-
-    if (isAutoEnabled) {
-      btnAuto.className = 'pro-btn auto-on-state';
-      btnAutoText.innerText = 'الإطفاء التلقائي: مفعّل ✓';
-      btnAutoSub.innerText = 'يعمل عند دخول المنطقة العمياء';
-      autoMsg.innerHTML = '✅ <strong>الإطفاء التلقائي مفعّل:</strong> سيبدأ المؤقت بالعد عند دخول المنطقة العمياء، أو يطفئ عند مستوى 90 سم إذا لم تثبت وقتاً جديداً.';
-    } else {
-      btnAuto.className = 'pro-btn state-off';
-      btnAutoText.innerText = 'الإطفاء التلقائي: مطفأ';
-      btnAutoSub.innerText = 'اضغط لتفعيل الحماية';
-      autoMsg.innerHTML = '⚠️ <strong>تنبيه:</strong> الإطفاء التلقائي مطفأ حالياً. لن تنطفئ المضخة تلقائياً إلا بتفعيله.';
-    }
-
-    // مزامنة المؤقت المشروط بالمنطقة العمياء على كل الأجهزة
-    customTimerActive = (d.custom_timer_active === 1);
-    shutoffSetMin = d.shutoff_set_min || 0;
-    shutoffRemSec = d.shutoff_rem_sec || 0;
-
-    const timerBadge = document.getElementById('timerConditionBadge');
-    const timerDisplay = document.getElementById('shutoffTimerDisplay');
-    const statTimer = document.getElementById('statSetTimer');
-
-    if (customTimerActive && shutoffSetMin > 0) {
-      timerDisplay.innerText = formatMMSS(shutoffRemSec);
-      statTimer.innerText = `${shutoffSetMin} دقيقة (في المنطقة العمياء)`;
-      if (document.activeElement !== document.getElementById('shutoffMinInput')) {
-        document.getElementById('shutoffMinInput').placeholder = String(shutoffSetMin);
-      }
-
-      if (!isAutoEnabled) {
-        timerBadge.innerText = '⏸️ بانتظار تفعيل زر الإطفاء التلقائي';
-        timerBadge.style.color = '#fca5a5';
-      } else if (!isWaterInBlindSpot) {
-        timerBadge.innerText = '⏳ بانتظار وصول الماء للمنطقة العمياء (27 سم)';
-        timerBadge.style.color = '#fdba74';
-      } else if (isPumpRunning) {
-        timerBadge.innerText = '🔥 داخل المنطقة العمياء: العد التنازلي يعمل الآن';
-        timerBadge.style.color = '#6ee7b7';
-      } else {
-        timerBadge.innerText = '✅ المؤقت مثبت (يبدأ عند التشغيل في المنطقة العمياء)';
-        timerBadge.style.color = '#38bdf8';
-      }
-    } else {
-      timerDisplay.innerText = '90 سم';
-      statTimer.innerText = 'حد 90 سم تلقائي';
-      document.getElementById('shutoffMinInput').placeholder = '0';
-      timerBadge.innerText = '🎯 إطفاء تلقائي عند مستوى 90 سم (بدون مؤقت جديد)';
-      timerBadge.style.color = '#6ee7b7';
-    }
-
-    // مزامنة المؤقت العام المستقل (ضغطة 5 ثوانٍ)
-    overrideActive = (d.override_active === 1);
-    overrideRemSec = d.override_rem_sec || 0;
-    const ovBanner = document.getElementById('overrideBanner');
-    if (overrideActive && overrideRemSec > 0) {
-      ovBanner.style.display = 'flex';
-      document.getElementById('overrideRemText').innerText = `الوقت المتبقي للإطفاء: ${formatMMSS(overrideRemSec)}`;
-    } else {
-      ovBanner.style.display = 'none';
-    }
-
-    // مزامنة الوقت المتوقع للامتلاء والمعدل الزمني ومنبه المراقبة
-    document.getElementById('estFillTimerDisplay').innerText = formatMMSS(d.est_fill_sec || 0);
-    alertBeforeMin = d.alert_min || 5;
-
-    if (!inputsSyncedOnce || (document.activeElement !== document.getElementById('riseRateInput') && document.activeElement !== document.getElementById('alertBeforeInput'))) {
-      if (d.rise_rate !== undefined) document.getElementById('riseRateInput').value = d.rise_rate;
-      if (d.alert_min !== undefined) document.getElementById('alertBeforeInput').value = d.alert_min;
-      inputsSyncedOnce = true;
-    }
-
-    // فحص منبه الصعود لمراقبة الخزان على جميع الأجهزة
-    if (isPumpRunning && !roofReminderNotified) {
-      const targetRem = overrideActive ? overrideRemSec : ((isAutoEnabled && isWaterInBlindSpot && customTimerActive) ? shutoffRemSec : 0);
-      if (targetRem > 0 && targetRem <= alertBeforeMin * 60) {
-        roofReminderNotified = true;
-        triggerAlert('🔔 تذكير مراقبة الخزان', `تبقى ${alertBeforeMin} دقائق على موعد الإطفاء، اصعد لمراقبة الخزان.`);
-      }
-    }
-
-    // تحديث الإحصائيات والسجل المركزي لكل الأجهزة
-    document.getElementById('statTotalTime').innerText = formatDurationText(d.total_run_sec || 0);
-    document.getElementById('statLastDuration').innerText = formatDurationText(d.last_run_sec || 0);
-    document.getElementById('statLastStopReason').innerText = d.stop_reason || 'لا يوجد';
-
-    if (Array.isArray(d.logs)) {
-      renderServerLogs(d.logs);
-    }
-  }
-
-  function renderServerLogs(logs) {
-    const box = document.getElementById('logsListContainer');
-    document.getElementById('logsCountLabel').innerText = `${logs.length} تشغيلة`;
-
-    if (logs.length === 0) {
-      box.innerHTML = `<div class="simple-note" style="text-align:center;">لا توجد تشغيلات مسجلة بعد. سيظهر السجل هنا على جميع الأجهزة فور إطفاء المضخة.</div>`;
-      return;
-    }
-
-    box.innerHTML = logs.map(l => `
-      <div class="log-card">
-        <div class="log-header">
-          <span>🔹 تشغيلة رقم #${l.id}</span>
-        </div>
-        <div class="log-points">
-          <div>⏱️ مدة العمل: <strong>${formatDurationText(l.run_sec)}</strong></div>
-          <div>🎯 المؤقت المضبوط: <strong>${l.timer_min > 0 ? l.timer_min + ' دقيقة' : 'حد 90 سم تلقائي'}</strong></div>
-          <div>📏 بداية الماء: <strong>${l.start_cm} سم</strong></div>
-          <div>📏 نهاية الماء: <strong>${l.end_cm} سم</strong></div>
-          <div style="grid-column: span 2;">🛑 سبب الإيقاف: <strong style="color:#fcd34d;">${l.reason}</strong></div>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  async function togglePumpState() {
-    try {
-      await fetch(`http://${ESP_IP}/pump`);
-      syncWithEsp();
-    } catch (e) {}
-  }
-
-  async function toggleAutoState() {
-    try {
-      await fetch(`http://${ESP_IP}/auto`);
-      syncWithEsp();
-    } catch (e) {}
-  }
-
-  async function forceRefreshSensor() {
-    try {
-      await fetch(`http://${ESP_IP}/refresh`);
-      syncWithEsp();
-    } catch (e) {}
-  }
-
-  async function clearServerLogs() {
-    try {
-      await fetch(`http://${ESP_IP}/clear_logs`);
-      syncWithEsp();
-    } catch (e) {}
-  }
-
-  syncWithEsp();
-  setInterval(syncWithEsp, 1000);
-</script>
-
-</body>
-</html>
